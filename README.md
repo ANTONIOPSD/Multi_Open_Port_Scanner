@@ -23,3 +23,4 @@ If you don't type any port, it will scan all ports from 1 to 65535.
 
 
 
+<a href="https://www.buymeacoffee.com/ANTONIOPS" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
