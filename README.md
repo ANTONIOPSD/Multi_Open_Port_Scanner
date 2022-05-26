@@ -5,10 +5,12 @@
 
 
 Download: https://github.com/ANTONIOPSD/Multi_Open_Port_Scanner/releases/
-
-
-You can use single ports separated by spaces (21 50 80 443), multiple port ranges (1-100 5000-6000 64000) or a combination of both (21 80-100 5000-6000 34 777 12). Order does not matter, it will automatically order all the ports and remove duplicates, it will also replace ports higher than 65535 with 65535.
-If you don't typy any port, it will scan all ports from 1 to 65535.
+<br/>
+You can use single ports separated by spaces (21 50 80 443), multiple port ranges (1-100 5000-6000 64000) or a combination of both (21 80-100 5000-6000 34 777 12). 
+<br/>
+Order does not matter, it will automatically order all the ports and remove duplicates, it will also replace ports higher than 65535 with 65535.
+<br/>
+If you don't type any port, it will scan all ports from 1 to 65535.
 
 
 ### You can scan any server on the internet.
