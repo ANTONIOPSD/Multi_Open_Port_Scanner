@@ -1,7 +1,7 @@
 # Multi_Open_Port_Scanner
 
 ## Source code coming soon
-### Made with Python3 + Qt6 (PyQt6) and packaged with Nuitka
+### Made with Python3 + Qt6 (PyQt6) and packed with Nuitka
 
 
 Download: https://github.com/ANTONIOPSD/Multi_Open_Port_Scanner/releases/
