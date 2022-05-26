@@ -12,6 +12,3 @@ Download: https://github.com/ANTONIOPSD/Multi_Open_Port_Scanner/releases/
 
 
 
-
-## FUCK YOU https://www.reddit.com/r/networking/ MODS FOR DELETING MY POST ABOUT SHARING THIS PROGRAM BECAUSE "Directing our members to resources elsewhere".
-## HOW DO YOU FUCKING EXPECT ME TO SHARE THIS WITHOUT SHARING THE LINK TO THE PROJECT???
