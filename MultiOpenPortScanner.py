@@ -1,6 +1,6 @@
 from PyQt6.QtCore import QThread, pyqtSignal, QLocale, QRect, Qt, QMetaObject, QCoreApplication
 from PyQt6.QtGui import QFont, QCursor
-from PyQt6.QtWidgets import QTabWidget, QLineEdit, QWidget, QLabel, QProgressBar, QCommandLinkButton, QTextEdit, QTabWidget, QPushButton, QApplication, QDialog, QSpinBox
+from PyQt6.QtWidgets import QTabWidget, QLineEdit, QWidget, QLabel, QProgressBar, QCommandLinkButton, QTextEdit, QTabWidget, QPushButton, QApplication, QDialog, QSpinBox, QMessageBox
 from threading import Thread
 import time
 import socket
@@ -49,10 +49,14 @@ class ScanThread(QThread):
                     try:
                         result = socket.create_connection((location), timeout=2)
                     except:
+                        if cancel_scan == True:
+                            self.signal_percentage.emit(0)
                         a_socket.close()
                         return
                     if result:
                         self.signal_open_port.emit(port)
+                        if cancel_scan == True:
+                            self.signal_percentage.emit(0)
                         a_socket.close()
                         return
             
@@ -67,7 +71,6 @@ class ScanThread(QThread):
 class Ui_dialog(object):
     def setupUi(self, dialog):
         dialog.setObjectName("dialog")
-        dialog.resize(600, 540)
         dialog.setFixedSize(600,540)
         font = QFont()
         font.setPointSize(14)
@@ -81,8 +84,6 @@ class Ui_dialog(object):
         dialog.setModal(False)
         self.tabWidget = QTabWidget(dialog)
         self.tabWidget.setGeometry(QRect(-1, 0, 601, 536))
-        font = QFont()
-        font.setPointSize(16)
         self.tabWidget.setFont(font)
         self.tabWidget.setTabShape(QTabWidget.TabShape.Rounded)
         self.tabWidget.setUsesScrollButtons(False)
@@ -93,8 +94,6 @@ class Ui_dialog(object):
         self.ScannerTab.setObjectName("ScannerTab")
         self.PortsInput = QLineEdit(self.ScannerTab)
         self.PortsInput.setGeometry(QRect(5, 75, 586, 30))
-        font = QFont()
-        font.setPointSize(14)
         self.PortsInput.setFont(font)
         self.PortsInput.setText("")
         self.PortsInput.setEchoMode(QLineEdit.EchoMode.Normal)
@@ -127,8 +126,6 @@ class Ui_dialog(object):
         self.ScannedList = QTextEdit(self.ScannerTab)
         self.ScannedList.setEnabled(True)
         self.ScannedList.setGeometry(QRect(5, 130, 281, 291))
-        font = QFont()
-        font.setPointSize(14)
         self.ScannedList.setFont(font)
         self.ScannedList.setInputMethodHints(Qt.InputMethodHint.ImhNone)
         self.ScannedList.setReadOnly(True)
@@ -138,8 +135,6 @@ class Ui_dialog(object):
         self.OpenList = QTextEdit(self.ScannerTab)
         self.OpenList.setEnabled(True)
         self.OpenList.setGeometry(QRect(295, 130, 296, 291))
-        font = QFont()
-        font.setPointSize(14)
         self.OpenList.setFont(font)
         self.OpenList.setInputMethodHints(Qt.InputMethodHint.ImhNone)
         self.OpenList.setReadOnly(True)
@@ -148,18 +143,14 @@ class Ui_dialog(object):
         self.OpenList.setObjectName("OpenList")
         self.IpInput = QLineEdit(self.ScannerTab)
         self.IpInput.setGeometry(QRect(5, 20, 586, 30))
-        font = QFont()
-        font.setPointSize(14)
         self.DelayBox = QSpinBox(self.ScannerTab)
         self.DelayBox.setGeometry(QRect(6, 430, 66, 22))
         self.DelayBox.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.DelayBox.setMaximum(9999)
-        self.DelayBox.setProperty("value", 0)
+        self.DelayBox.setProperty("value", 1)
         self.DelayBox.setObjectName("DelayBox")
         self.DelayLabel = QLabel(self.ScannerTab)
         self.DelayLabel.setGeometry(QRect(75, 430, 146, 21))
-        font = QFont()
-        font.setPointSize(14)
         self.DelayLabel.setFont(font)
         self.DelayLabel.setTextFormat(Qt.TextFormat.PlainText)
         self.DelayLabel.setWordWrap(True)
@@ -179,12 +170,9 @@ class Ui_dialog(object):
         self.ProgressBar = QProgressBar(self.ScannerTab)
         self.ProgressBar.setEnabled(False)
         self.ProgressBar.setGeometry(QRect(5, 459, 586, 36))
-        font = QFont()
-        font.setPointSize(18)
-        font.setBold(False)
-        font.setWeight(50)
         self.ProgressBar.setFont(font)
-        self.ProgressBar.setCursor(QCursor(Qt.CursorShape.WaitCursor))
+        self.ProgressBar.setDisabled(True)
+        self.ProgressBar.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.ProgressBar.setAccessibleName("")
         self.ProgressBar.setAutoFillBackground(False)
         self.ProgressBar.setMaximum(100)
@@ -217,12 +205,26 @@ class Ui_dialog(object):
         self.CancelButton.clicked.connect(self.cancel_scan)
         self.ProjectLinkButton.clicked.connect(self.open_url)
         self.PortsInput.textChanged.connect(self.check_input_ports)
+        self.DelayBox.valueChanged.connect(self.check_delay_value)
 
     global allowed_port_characters
     global not_allowed_port_characters
     
     allowed_port_characters = ["0","1","2","3","4","5","6","7","8","9","-"," "]
     not_allowed_port_characters = ["--", "---", "- ", " - "]
+
+    def check_delay_value(self):
+        if self.DelayBox.value() == 0:
+            warning_font = QFont()
+            warning_font.setPointSize(12)
+            delay_warning = QMessageBox()
+            delay_warning.setIcon(QMessageBox.Icon.Warning)
+            delay_warning.setFont(warning_font)
+            delay_warning.setText('Delay between each port scan too low !!!')
+            delay_warning.setInformativeText("Some servers will drop some of the scans and some open ports won't be detected.")
+            delay_warning.setWindowTitle("Warning")
+            delay_warning.setStandardButtons(QMessageBox.StandardButton.Ok)
+            delay_warning.exec()
 
     def check_input_ports(self):
         ports = self.PortsInput.text()
@@ -275,8 +277,11 @@ class Ui_dialog(object):
             self.CancelButton.setVisible(True)
             self.IpInput.setDisabled(True)
             self.PortsInput.setDisabled(True)
+            self.ProgressBar.setDisabled(False)
+            self.ProgressBar.setCursor(QCursor(Qt.CursorShape.WaitCursor))
             self.ProgressBar.setTextVisible(True)
             self.ProgressBar.setValue(0)
+            self.DelayBox.setDisabled(True)
             self.ScannedList.clear()
             self.OpenList.clear()
             ports_to_scan = []
@@ -318,6 +323,9 @@ class Ui_dialog(object):
         self.PortsInput.setDisabled(False)
         self.CancelButton.setVisible(False)
         self.CancelButton.setDisabled(True)
+        self.DelayBox.setDisabled(False)
+        self.ProgressBar.setDisabled(True)
+        self.ProgressBar.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
 
     def retranslateUi(self, dialog):
         _translate = QCoreApplication.translate
