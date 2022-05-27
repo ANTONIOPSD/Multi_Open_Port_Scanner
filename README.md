@@ -22,4 +22,15 @@ If you don't type any port, it will scan all ports from 1 to 65535.
 
 
 
+## Compile for Windows
+You need Python3 and then install PyQt6 and Nuitka:
+### pip install PyQt6
+### pip install Nuitka
+Then run the next command from CMD in the same folder where the **MultiOpenPortScanner.py** file is:
+### nuitka MultiOpenPortScanner.py --follow-imports --plugin-enable=pyqt6 --standalone --onefile --windows-disable-console
+
+### After some seconds, you will get the MultiOpenPortScanner.exe file and a bunch of folders (you only need the .exe file, you can delete those folders)
+
+
+
 <a href="https://www.buymeacoffee.com/ANTONIOPS" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
